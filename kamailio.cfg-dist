@@ -266,7 +266,7 @@ loadmodule "presence_xml.so"
 
 #!ifdef WITH_NAT
 loadmodule "nathelper.so"
-loadmodule "rtpproxy.so"
+loadmodule "rtpengine.so"
 #!endif
 
 #!ifdef WITH_TLS
@@ -405,7 +405,7 @@ modparam("presence_xml", "force_active", 1)
 
 #!ifdef WITH_NAT
 # ----- rtpproxy params -----
-modparam("rtpproxy", "rtpproxy_sock", "udp:127.0.0.1:7722")
+modparam("rtpengine", "rtpengine_sock", "udp:127.0.0.1:2223")
 
 # ----- nathelper params -----
 modparam("nathelper", "natping_interval", 30)
@@ -785,9 +785,9 @@ route[NATMANAGE] {
 	if (!(isflagset(FLT_NATS) || isbflagset(FLB_NATB))) return;
 
 	if(nat_uac_test("8")) {
-		rtpproxy_manage("co");
+		rtpengine_manage("replace-origin replace-session-connection");
 	} else {
-		rtpproxy_manage("cor");
+		rtpengine_manage("trust-address replace-origin replace-session-connection");
 	}
 
 	if (is_request()) {
